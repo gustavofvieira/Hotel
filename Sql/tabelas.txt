@@ -1,0 +1,20 @@
+tabela hospede
+nome - varchar(60)
+cpf - int
+telefone - int
+dt_nasc - datetime
+
+
+
+tabela hospedagem
+nr_aposento - int
+id_hospede -  int
+check in - datetime
+check out - datetime
+valor_hospedagem - float
+finalizado - bit
+
+
+tabela historico
+id_hospede
+id_hospedagem
