@@ -1,2 +1,17 @@
 <?php
-//vai mudar pelo cpf, busca no banco pelo cpf traz o id e faz as mudanças
+require_once("../classes/Hospede.php");
+$cpf = $_REQUEST["cpf"];
+$nome = $_REQUEST["nome"];
+$telefone = $_REQUEST["telefone"];
+
+
+if(!empty($cpf) || !empty($nome)){
+
+    $hospede = new Hospede();
+    //$hospede->loadByCpf($cpf);
+    $hospede->loadByNome($nome);
+ 
+    $hospede->update($nome,$cpf,$telefone);
+    echo $hospede;
+}
+

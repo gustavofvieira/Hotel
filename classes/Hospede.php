@@ -4,13 +4,13 @@ class Hospede{
     private $idhospede;
     private $nome;
     private $cpf;
-    private $dt_nasc;
+    private $telefone;
 
     public function getIdhospede(){
         return $this->idhospede;
     }
-    public function setIdusuario($value){
-        $this->idusuario = $value; 
+    public function setIdhospede($value){
+        $this->idhospede = $value; 
     }
     
     public function getNome(){
@@ -27,17 +27,37 @@ class Hospede{
         $this->cpf = $value; 
     }
 
-    public function getDtNasc(){
-        return $this->dt_nasc;
+    public function getTelefone(){
+        return $this->telefone;
     }
-    public function setDtNasc($value){
-        $this->dt_nasc = $value; 
+    public function setTelefone($value){
+        $this->telefone = $value; 
     }
 
     public function loadById($id){
         $sql = new Sql();
-        $results = $sql->select("SELECT *FROM hospede where id_hospede = :ID", array(
+        $results = $sql->select("SELECT * FROM hospede where id_hospede = :ID", array(
             ":ID"=>$id
+        ));
+        if(count($results) > 0){
+             $this->setData($results[0]);
+        }
+    }
+
+    public function loadByCpf($cpf){
+        $sql = new Sql();
+        $results = $sql->select("SELECT * FROM hospede where cpf = :CPF", array(
+            ":CPF"=>$cpf
+        ));
+        if(count($results) > 0){
+             $this->setData($results[0]);
+        }
+    }
+    
+    public function loadByNome($nome){
+        $sql = new Sql();
+        $results = $sql->select("SELECT * FROM hospede where nome = :NOME", array(
+            ":NOME"=>$nome
         ));
         if(count($results) > 0){
              $this->setData($results[0]);
@@ -72,25 +92,13 @@ class Hospede{
     }
 
     public function setData($data){
-        $this->setIdusuario($data['id_hospede']);
+        $this->setIdhospede($data['id_hospede']);
         $this->setNome($data['nome']);
         $this->setCpf($data['cpf']);
-        $this->setDtNasc(new DateTime($data['dt_nasc']));
+        $this->setTelefone($data['telefone']);
+       // $this->setDtNasc(new DateTime($data['dt_nasc']));
     }
 
-
-    // public function insert(){
-    //     $sql = new Sql();
-    //     $results = $sql->select("CALL sp_usuarios_insert(:NOME,:CPF)",array(
-    //         ':NOME'=>$this->getNome(),
-    //         ':CPF'=>$this->getcpf()
-
-    //     ));
-        
-    //     if(count($results) > 0){
-    //         $this->setData($results[0]);
-    //     }
-    // }
 
 
     public function insert($nome,$cpf,$telefone){
@@ -101,14 +109,22 @@ class Hospede{
     }
 
 
-    public function update($login, $password){
-        $this->setNome($login);
-        $this->setCpf($password);
+    public function update($nome, $cpf,$telefone){
+        if(!empty($nome)){
+            $this->setNome($nome); 
+        }
+        if(!empty($cpf)){
+            $this->setCpf($cpf); 
+        }
+        if(!empty($telefone)){
+            $this->setTelefone($telefone); 
+        }
 
         $sql = new Sql();
-        $sql->query("UPDATE hospede SET nome = :NOME, cpf = :CPF WHERE id_hospede = :ID",array(
+        $sql->query("UPDATE hospede SET nome = :NOME, cpf = :CPF, telefone = :TELEFONE WHERE id_hospede = :ID",array(
             ':NOME'=>$this->getNome(),
             ':CPF'=>$this->getCpf(),
+            ':TELEFONE'=>$this->getTelefone(),
             ':ID'=>$this->getIdhospede()
         ));
     }
@@ -118,10 +134,11 @@ class Hospede{
         $sql->query("DELETE FROM hospede WHERE id_hospede = :ID", array(
             ':ID'=>$this->getIdhospede()
         ));
-        $this->setIdusuario(0);
+        $this->setIdhospede(0);
         $this->setNome("");
         $this->setCpf("");
-        $this->setDtNasc(new DateTime());
+        $this->setTelefone("");
+       // $this->setDtNasc(new DateTime());
     }
     public function __construct($login = "", $password = ""){
         $this->setNome($login);
@@ -133,7 +150,8 @@ class Hospede{
             "id_hospede"=>$this->getIdhospede(),
             "nome"=>$this->getNome(),
             "cpf"=>$this->getCpf(),
-            "dt_nasc"=>$this->getDtNasc()->format("d/m/Y H:m:s")
+            "telefone"=>$this->getTelefone()
+            //"dt_nasc"=>$this->getDtNasc()->format("d/m/Y H:m:s")
         ));
     }
     
