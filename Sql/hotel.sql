@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 14-Ago-2020 às 02:06
+-- Generation Time: 14-Ago-2020 às 04:15
 -- Versão do servidor: 10.1.34-MariaDB
 -- PHP Version: 7.2.7
 
@@ -44,7 +44,7 @@ CREATE TABLE `historico` (
 CREATE TABLE `hospedagem` (
   `id_hospedagem` int(11) NOT NULL,
   `id_hospede` int(11) NOT NULL,
-  `nr_aposento` int(11) NOT NULL,
+  `id_quarto` int(11) NOT NULL,
   `checkin` datetime NOT NULL,
   `checkout` datetime NOT NULL,
   `valor_hospedagem` double NOT NULL,
@@ -73,6 +73,29 @@ INSERT INTO `hospede` (`nome`, `cpf`, `telefone`, `id_hospede`) VALUES
 ('gustavo ferreira', '12345678910', '5571999293333', 2),
 ('elite', '099', '12345678910', 4);
 
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `quarto`
+--
+
+CREATE TABLE `quarto` (
+  `id_quarto` int(11) NOT NULL,
+  `descricao` varchar(50) COLLATE utf8_bin NOT NULL,
+  `ocupado` tinyint(1) NOT NULL,
+  `numero` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- Extraindo dados da tabela `quarto`
+--
+
+INSERT INTO `quarto` (`id_quarto`, `descricao`, `ocupado`, `numero`) VALUES
+(1, 'de luxo', 0, 1),
+(2, 'de luxo', 0, 2),
+(3, 'de luxo', 0, 3),
+(4, 'suite', 0, 4);
+
 --
 -- Indexes for dumped tables
 --
@@ -96,6 +119,12 @@ ALTER TABLE `hospede`
   ADD PRIMARY KEY (`id_hospede`);
 
 --
+-- Indexes for table `quarto`
+--
+ALTER TABLE `quarto`
+  ADD PRIMARY KEY (`id_quarto`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -116,6 +145,12 @@ ALTER TABLE `hospedagem`
 --
 ALTER TABLE `hospede`
   MODIFY `id_hospede` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `quarto`
+--
+ALTER TABLE `quarto`
+  MODIFY `id_quarto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
