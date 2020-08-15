@@ -107,10 +107,10 @@ class Hospedagem{
         $this->totalValorHospedagens = $value; 
     }
 
-    public function getUltimaEstadia(){
+    public function getValorUltima(){
         return $this->ultimaEstadia;
     }
-    public function setUltimaEstadia($value){
+    public function setValorUltima($value){
         $this->ultimaEstadia = $value; 
     }
 
@@ -445,5 +445,14 @@ class Hospedagem{
         }
     }
     
+    /*
+
+    consultas valor ultima hospedagem e valor total
+SELECT SUM(valor_hospedagem) as totalHospedagens from hospedagem where id_hospede = 4
+
+#SELECT valor_hospedagem as valorUltima  from hospedagem where id_hospede = 4  and valor_hospedagem != 0 order by id_hospedagem desc limit 1
+
+
+    */
    
 }
