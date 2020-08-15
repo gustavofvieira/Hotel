@@ -1,6 +1,6 @@
 <?php
-require_once("../classes/Hospede.php");
+require_once("../classes/Quarto.php");
 
 
-$lista = Hospede::getList();// chamando como metódo estático
+$lista = Quarto::getList();// chamando como metódo estático
 echo json_encode($lista);

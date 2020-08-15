@@ -9,7 +9,14 @@ if(!empty($numero) && !empty($descricao)){
     $quarto = new Quarto();
     echo $quarto->insert($numero,$descricao);
     echo "Inserido.";
+
+
 }else{
 
     echo "Parametros incompletos.";
+
 }
+
+$lista = Quarto::getList();// chamando como metódo estático
+echo json_encode($lista);
+

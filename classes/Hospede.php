@@ -54,6 +54,16 @@ class Hospede{
         }
     }
     
+    public function loadByTelefone($telefone){
+        $sql = new Sql();
+        $results = $sql->select("SELECT * FROM hospede where telefone= :TEL", array(
+            ":TEL"=>$telefone
+        ));
+        if(count($results) > 0){
+             $this->setData($results[0]);
+        }
+    }
+    
     public function loadByNome($nome){
         $sql = new Sql();
         $results = $sql->select("SELECT * FROM hospede where nome = :NOME", array(

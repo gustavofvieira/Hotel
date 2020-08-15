@@ -38,9 +38,11 @@ class Quarto{
         $this->ocupado = $value; 
     }
 
+
+
     public function loadById($id){
         $sql = new Sql();
-        $results = $sql->select("SELECT * FROM hospede where id_hospede = :ID", array(
+        $results = $sql->select("SELECT * FROM quarto where id_quarto = :ID", array(
             ":ID"=>$id
         ));
         if(count($results) > 0){
@@ -60,7 +62,7 @@ class Quarto{
 
     public static function getList(){
         $sql = new Sql();
-        return $sql->select("SELECT * FROM quarto ORDER BY nome;");
+        return $sql->select("SELECT * FROM quarto ORDER BY numero;");
     }
 
     public static function search($descricao){

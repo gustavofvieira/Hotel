@@ -10,7 +10,7 @@ if(!empty($nome) && !empty($cpf) && !empty($telefone)){
 
     $hospede = new Hospede();
     echo $hospede->insert($nome,$cpf,$telefone);
-    echo $nome;
+   
 }else{
 
     echo "Parametros incompletos.";
