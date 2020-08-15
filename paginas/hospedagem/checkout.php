@@ -2,6 +2,7 @@
 require_once("../../classes/Hospede.php");
 require_once("../../classes/Hospedagem.php");
 require_once("../../classes/quarto.php");
+//include_once("../../classes/Hotel.php");
 
 // QUando estiver fazendo o checkout, o metodo vai verificar quantos dias ele ficou e 
 //contar quais dias foram fds e os de semana, multiplciar cada pelo respectivo valor
@@ -9,6 +10,8 @@ $cpf = $_REQUEST["cpf"];
 $telefone = $_REQUEST["telefone"];
 $nome = $_REQUEST["nome"];
 
+
+//$hotel = new Hotel();
 $hospede = new Hospede();
 $hospedagem = new Hospedagem();
 $quarto = new Quarto();
@@ -24,11 +27,11 @@ if(!empty($cpf)){
         echo "HOSPEDE: ". $hospede->getNome() 
             ."<br>QUARTO: " .$quarto->getNumero()
             ."<br>Data CheckIn: " . date('d/m/Y H:i:s', strtotime($hospedagem->getCheckin()))
-            ."<br>Data CheckOut: " .$hospedagem->getCheckout()
-            ."<br>Id quarto: " .$hospedagem->getIdQuarto();
-            //."<br>Total da estadia: " .$hospedagem->getTotalEstadia()
-           // ."<br>Valor total:".$hospedagem->getValor()
-          //  ."<br>Checkout Efetuado por CPF ";
+            ."<br>Data CheckOut: " .date('d/m/Y H:i:s', strtotime($hospedagem->getCheckout()))
+            ."<br>Id quarto: " .$hospedagem->getIdQuarto()
+            ."<br>Total da estadia: " .$hospedagem->getTotalEstadia()
+            ."<br>Valor total:".$hospedagem->getValor()
+            ."<br>Checkout Efetuado por CPF ";
     }else{
        echo "Checkout não efetuado - Hospede não cadastrado";
     }

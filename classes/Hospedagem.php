@@ -1,5 +1,6 @@
 <?php
 require_once("sql.php");
+include_once("Hotel.php");
 class Hospedagem{
     private $idhospedagem;
     private $idhospede;
@@ -9,6 +10,7 @@ class Hospedagem{
     private $valor;
     private $finalizado;
     private $qtQuartoLivre;
+    private $totalEstadia;
 
     public function getIdHospedagem(){
         return $this->idhospedagem;
@@ -65,6 +67,13 @@ class Hospedagem{
     public function setQtQuartoLivre($value){
         $this->qtQuartoLivre = $value; 
     }
+    public function getTotalEstadia(){
+        return $this->totalEstadia;
+    }
+    public function setTotalEstadia($value){
+        $this->totalEstadia = $value; 
+    }
+
 
     public function loadById($id){
         $sql = new Sql();
@@ -224,14 +233,19 @@ class Hospedagem{
                  $this->confirmaHospedagem();
                 $this->liberaQuarto();
                 $this->setFinalizado(1);
-                $this->setCheckout("NOW()");
+                //$this->setCheckout("NOW()");
                 $this->update($this->getIdHospede(),$this->getIdQuarto(),$this->getCheckin()
                 ,$this->getCheckout(),$this->getValor(),$this->getFinalizado());
  
                 $sql->query("UPDATE hospedagem SET checkout = NOW() WHERE id_hospedagem = :ID",array(
                        ':ID'=>$this->getIdHospedagem()
                         ));
-               // $this->confirmaHospedagem();
+                $this->confirmaCheckout();
+                $this->calculaEstadia();
+               // $this->confirmaCheckout();//n ta deixando salvar o valor
+                
+               $this->update($this->getIdHospede(),$this->getIdQuarto(),$this->getCheckin()
+                ,$this->getCheckout(),$this->getValor(),$this->getFinalizado());
 
     }
 
@@ -280,4 +294,39 @@ class Hospedagem{
 
     }
 
+    public function calculaEstadia(){
+        $hotel = new Hotel();
+       // $qtDias = date("d/m/Y H:i:s",strtotime($this->getCheckout())) -  date("d/m/Y H:i:s",strtotime($this->getCheckin()));
+       $qtDias = date("d/m/Y H:i:s",strtotime($this->getCheckout())) -  date("d/m/Y H:i:s",strtotime($this->getCheckin()));   
+     //  $qtDias =  date("d/m/Y H:i:s",$this->getCheckout()) - date("d/m/Y H:i:s",$this->getCheckin());
+       $this->setTotalEstadia($qtDias);
+        $total = 0;
+        for($i=0 ; $i<$qtDias ; $i++){
+            $datas = $this->getCheckin() + ($i* 86400);
+            $data = explode(",",date("l, d/m/Y",$datas) ) ;
+            if($data[0] == $hotel->semana[0] || $data[0] == $hotel->semana[6]){
+            
+                $total += $hotel->precoDiaria[1];
+                
+            }else{
+                $total += $hotel->precoDiaria[0];
+            }
+
+        }
+        $this->setValor($total);
+    }
+
+    public function confirmaCheckout(){
+        $sql = new Sql();
+        $results = $sql->select("SELECT * FROM hospedagem where id_hospedagem = :IDHOSPEDAGEM and
+        id_hospede = :IDHOSPEDE and id_quarto = :IDQUARTO and finalizado = 1" , array(
+            ":IDHOSPEDAGEM"=>$this->getIdHospedagem(),
+            ":IDHOSPEDE"=>$this->getIdHospede(),
+            ":IDQUARTO"=>$this->getIdQuarto()
+        ));
+        if(count($results) > 0){
+             $this->setData($results[0]);
+        }
+    }
+   
 }
