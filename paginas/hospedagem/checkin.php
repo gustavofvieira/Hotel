@@ -1,4 +1,5 @@
 <?php
+//http://localhost/hotel/paginas/hospedagem/checkin.php?cpf=123&garagem=0
 require_once("../../classes/Hospede.php");
 require_once("../../classes/Hospedagem.php");
 require_once("../../classes/quarto.php");
@@ -6,6 +7,7 @@ require_once("../../classes/quarto.php");
 $cpf = $_REQUEST["cpf"];
 $telefone = $_REQUEST["telefone"];
 $nome = $_REQUEST["nome"];
+$garagem = $_REQUEST["garagem"];
 
 $hospede = new Hospede();
 $hospedagem = new Hospedagem();
@@ -18,7 +20,7 @@ if(!empty($cpf)){
 
     $quarto->loadById($hospedagem->getIdQuarto());
 
-    $hospedagem->checkin($hospede->getIdhospede(),$hospedagem->getIdQuarto());
+    $hospedagem->checkin($hospede->getIdhospede(),$hospedagem->getIdQuarto(),$garagem);
     
  
     if(!empty($hospedagem->getIdHospedagem())){

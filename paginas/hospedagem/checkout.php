@@ -1,4 +1,5 @@
 <?php
+//http://localhost/hotel/paginas/hospedagem/checkout.php?cpf=099
 require_once("../../classes/Hospede.php");
 require_once("../../classes/Hospedagem.php");
 require_once("../../classes/quarto.php");

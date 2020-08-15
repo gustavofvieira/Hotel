@@ -14,6 +14,9 @@ class Hospedagem{
     private $totalEstadia;
     private $qtDiasUteis;
     private $qtDiasFds;
+
+    private $totalValorHospedagens;
+    private $ultimaEstadia;
     
 
 
@@ -97,6 +100,21 @@ class Hospedagem{
         $this->qtDiasFds = $value; 
     }
 
+    public function getTotalValorHospedagens(){
+        return $this->totalValorHospedagens;
+    }
+    public function setTotalValorHospedagens($value){
+        $this->totalValorHospedagens = $value; 
+    }
+
+    public function getUltimaEstadia(){
+        return $this->ultimaEstadia;
+    }
+    public function setUltimaEstadia($value){
+        $this->ultimaEstadia = $value; 
+    }
+
+
     public function loadById($id){
         $sql = new Sql();
         $results = $sql->select("SELECT * FROM hospedagem where id_hospedagem = :ID", array(
@@ -110,20 +128,10 @@ class Hospedagem{
  
 
 
-
     public static function getList(){
         $sql = new Sql();
         return $sql->select("SELECT * FROM hospedagem ORDER BY id_hospedagem ASC;");
     }
-
-    //join com a table quarto
-    public static function search($descricao){
-        $sql = new Sql();
-        return $sql->select("SELECT * FROM hospedagem WHERE descricao LIKE :SEARCH ORDER BY nome",array(
-            ':SEARCH' => "%".$descricao."%"
-        ));
-    }
-
 
 
 
@@ -162,21 +170,21 @@ class Hospedagem{
         }
     }
 
-    public function checkin($idhospede, $idquarto){
+    public function checkin($idhospede, $idquarto,$garagem){
         $this->setIdHospede($idhospede);
         if($this->getQtQuartoLivre() > 0){
-                $this->insert($idhospede, $idquarto);
+                $this->insert($idhospede, $idquarto,$garagem);
                 $this->confirmaHospedagem();
         }else{
             return "Não há vagas";
         }
 
     }
-    public function insert($idhospede, $idquarto){
+    public function insert($idhospede, $idquarto,$garagem){
 
         $sql = new Sql();
-        $sql->query("INSERT INTO hospedagem (id_hospede,id_quarto,checkin,finalizado)
-         values ("."'".$idhospede."'".","."'".$idquarto."'".",NOW(),0)");
+        $sql->query("INSERT INTO hospedagem (id_hospede,id_quarto,garagem,checkin,finalizado)
+         values ("."'".$idhospede."'".","."'".$idquarto."'".","."'".$garagem."'".",NOW(),0)");
 
         $sql->query("UPDATE quarto SET ocupado = 1 where id_quarto  = :IDQUARTO",array(
         ':IDQUARTO'=>$this->getIdQuarto()
@@ -231,7 +239,8 @@ class Hospedagem{
             "valor"=>$this->getValor(),
             "checkin"=>$this->getCheckin()->format("d/m/Y H:m:s"),
             "checkout"=>$this->getCheckout()->format("d/m/Y H:m:s"),
-            "finalizado"=>$this->getFinalizado()
+            "finalizado"=>$this->getFinalizado(),
+            "garagem"=>$this->getGaragem()
         ));
     }
     
@@ -244,6 +253,12 @@ class Hospedagem{
         $this->setValor($data['valor_hospedagem']);
         $this->setFInalizado($data['finalizado']);
         $this->setGaragem($data['garagem']);
+        $this->setUltimaEstadia($data['ultimoCheckout']);
+        $this->setTotalValorHospedagens($data['totalHospedagens']);
+
+        
+    
+    
     }
 
 
@@ -407,5 +422,28 @@ class Hospedagem{
              $this->setData($results[0]);
         }
     }
+
+    ################################### HISTORICO HOSPEDAGEM ################################################
+
+
+
+    public static function historicoHospedagem($idhospede){
+        $sql = new Sql();
+        return $sql->select("SELECT * FROM hospedagem WHERE id_hospede = :IDHOSPEDE ",array(
+            ':IDHOSPEDE' => $idhospede
+        ));
+    }
+
+     
+    public function ultimoCheckoutEValorTotal($idhospede){
+        $sql = new Sql();
+        $results = $sql->select("SELECT MAX(checkout) as ultimoCheckout, SUM(valor_hospedagem) as totalHospedagens from hospedagem where id_hospede = :IDHOSPEDE" , array(
+            ":IDHOSPEDE"=>$idhospede
+        ));
+        if(count($results) > 0){
+             $this->setData($results[0]);
+        }
+    }
+    
    
 }
