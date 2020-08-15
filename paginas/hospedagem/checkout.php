@@ -20,16 +20,15 @@ if(!empty($cpf)){
     $hospede->loadByCpf($cpf);
     
 
-    $hospedagem->checkout($cpf);
+    $hospedagem->checkout("",$cpf,"");
     
- 
+    $quarto->loadById($hospedagem->getIdQuarto());
     if(!empty($hospedagem->getIdHospedagem())){
         echo "HOSPEDE: ". $hospede->getNome() 
-            ."<br>QUARTO: " .$quarto->getNumero()
+            ."<br>QUARTO: " .$quarto->getNumero()." Descrição: ".$quarto->getDesc()
             ."<br>Data CheckIn: " . date('d/m/Y H:i:s', strtotime($hospedagem->getCheckin()))
             ."<br>Data CheckOut: " .date('d/m/Y H:i:s', strtotime($hospedagem->getCheckout()))
-            ."<br>Id quarto: " .$hospedagem->getIdQuarto()
-            ."<br>Total da estadia: " .$hospedagem->getTotalEstadia()
+            ."<br>Total de dias da estadia: " .$hospedagem->getTotalEstadia()
             ."<br>Dias Uteis:".$hospedagem->getQtDiasUteis()
             ."<br>Finais de semana:".$hospedagem->getQtDiasFDS()
             ."<br>Valor diária dias uteis:".$hotel->precoDiaria[0]
@@ -49,45 +48,61 @@ if(!empty($cpf)){
     
 }
 
-/*
+
 if(!empty($telefone)){
     $hospede->loadByTelefone($telefone);
-    $hospedagem->loadByQuartoLivre(0);
-
+    $hospedagem->checkout("","",$telefone);
     $quarto->loadById($hospedagem->getIdQuarto());
-
-    $hospedagem->checkout($hospede->getIdhospede(),$hospedagem->getIdQuarto());
-    
  
     if(!empty($hospedagem->getIdHospedagem())){
         echo "HOSPEDE: ". $hospede->getNome() 
-            ."<br>QUARTO: " .$quarto->getNumero()
-            ."<br>Data Checkin: " .$hospedagem->getCheckin()
-            ."<br>Checkin Efetuado por Telefone ";
-    }else{
-        echo "Checkin não efetuado - Hospede não cadastrado";
-    }
+            ."<br>QUARTO: " .$quarto->getNumero()." Descrição: ".$quarto->getDesc()
+            ."<br>Data CheckIn: " . date('d/m/Y H:i:s', strtotime($hospedagem->getCheckin()))
+            ."<br>Data CheckOut: " .date('d/m/Y H:i:s', strtotime($hospedagem->getCheckout()))
+            ."<br>Total de dias da estadia: " .$hospedagem->getTotalEstadia()
+            ."<br>Dias Uteis:".$hospedagem->getQtDiasUteis()
+            ."<br>Finais de semana:".$hospedagem->getQtDiasFDS()
+            ."<br>Valor diária dias uteis:".$hotel->precoDiaria[0]
+            ."<br>Valor diária dias fim de semana:".$hotel->precoDiaria[1]
+            ."<br>Valor total:".$hospedagem->getValor()
+            ."<br>Checkout Efetuado por CPF ";
+            if($hospedagem->getGaragem() == 1){
 
+                echo "<br>Garagem:".$hospedagem->getGaragem() 
+                     ."<br>Acrescimo garagem dia util:".$hotel->acrescimo[0]
+                     ."<br>Acrescimo garagem fim de semana:".$hotel->acrescimo[1];
+            }
+    }else{
+       echo "Checkout não efetuado - Hospede não cadastrado";
+    }
 }
 if(!empty($nome)){
     $hospede->loadByNome($nome);
-    
-    $hospedagem->loadByQuartoLivre(0);
-
+    $hospedagem->checkout($nome,"","");
     $quarto->loadById($hospedagem->getIdQuarto());
-
-    $hospedagem->checkout($hospede->getIdhospede(),$hospedagem->getIdQuarto());
-    
  
     if(!empty($hospedagem->getIdHospedagem())){
         echo "HOSPEDE: ". $hospede->getNome() 
-            ."<br>QUARTO: " .$quarto->getNumero()
-            ."<br>Data Checkin: " .$hospedagem->getCheckin()
-            ."<br>Checkout Efetuado por Nome ";
+            ."<br>QUARTO: " .$quarto->getNumero()." Descrição: ".$quarto->getDesc()
+
+            ."<br>Data CheckIn: " . date('d/m/Y H:i:s', strtotime($hospedagem->getCheckin()))
+            ."<br>Data CheckOut: " .date('d/m/Y H:i:s', strtotime($hospedagem->getCheckout()))
+            ."<br>Total de dias da estadia: " .$hospedagem->getTotalEstadia()
+            ."<br>Dias Uteis:".$hospedagem->getQtDiasUteis()
+            ."<br>Finais de semana:".$hospedagem->getQtDiasFDS()
+            ."<br>Valor diária dias uteis:".$hotel->precoDiaria[0]
+            ."<br>Valor diária dias fim de semana:".$hotel->precoDiaria[1]
+            ."<br>Valor total:".$hospedagem->getValor()
+            ."<br>Checkout Efetuado por CPF ";
+            if($hospedagem->getGaragem() == 1){
+
+                echo "<br>Garagem:".$hospedagem->getGaragem() 
+                     ."<br>Acrescimo garagem dia util:".$hotel->acrescimo[0]
+                     ."<br>Acrescimo garagem fim de semana:".$hotel->acrescimo[1];
+            }
     }else{
-        echo "Checkout não efetuado - Hospede não cadastrado";
+       echo "Checkout não efetuado - Hospede não cadastrado";
     }
-    
-*/
+}
 
 

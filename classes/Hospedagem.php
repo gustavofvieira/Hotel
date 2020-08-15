@@ -250,9 +250,18 @@ class Hospedagem{
     ##################### CHECKOUT #################### toda verificação dentro do checkout pra chamar o update
 
 
-   public function checkout($cpf){
-                 $sql = new Sql();
-                 $this->loadByHospedeOQuarto("",$cpf,"");
+   public function checkout($nome,$cpf,$telefone){
+                $sql = new Sql();
+                if(!empty($nome)){
+                    $this->loadByHospedeOQuarto($nome,"","");
+                 }
+                 if(!empty($cpf)){
+                    $this->loadByHospedeOQuarto("",$cpf,"");
+                 }
+                 if(!empty($telefone)){
+                    $this->loadByHospedeOQuarto("","",$telefone);
+                 }
+                 
                  $this->confirmaHospedagem();
                 $this->liberaQuarto();
                 $this->setFinalizado(1);
@@ -264,7 +273,7 @@ class Hospedagem{
                        ':ID'=>$this->getIdHospedagem()
                         ));
                 $this->confirmaCheckout();
-                
+
                 if($this->getGaragem() == 1){
                     $this->calculaEstadiaCA();
                 }else{
