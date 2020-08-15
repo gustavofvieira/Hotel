@@ -7,10 +7,15 @@ class Hospedagem{
     private $idquarto;
     private $checkin;
     private $checkout;
+    private $garagem;
     private $valor;
     private $finalizado;
     private $qtQuartoLivre;
     private $totalEstadia;
+    private $qtDiasUteis;
+    private $qtDiasFds;
+    
+
 
     public function getIdHospedagem(){
         return $this->idhospedagem;
@@ -47,6 +52,12 @@ class Hospedagem{
         $this->checkout = $value; 
     }
 
+    public function getGaragem(){
+        return $this->garagem;
+    }
+    public function setGaragem($value){
+        $this->garagem = $value; 
+    }
     public function getValor(){
         return $this->valor;
     }
@@ -73,7 +84,18 @@ class Hospedagem{
     public function setTotalEstadia($value){
         $this->totalEstadia = $value; 
     }
-
+    public function getQtDiasUteis(){
+        return $this->qtDiasUteis;
+    }
+    public function setQtDiasUteis($value){
+        $this->qtDiasUteis = $value; 
+    }
+    public function getQtDiasFDS(){
+        return $this->qtDiasFds;
+    }
+    public function setQtDiasFDS($value){
+        $this->qtDiasFds = $value; 
+    }
 
     public function loadById($id){
         $sql = new Sql();
@@ -221,6 +243,7 @@ class Hospedagem{
         $this->setCheckout($data['checkout']);
         $this->setValor($data['valor_hospedagem']);
         $this->setFInalizado($data['finalizado']);
+        $this->setGaragem($data['garagem']);
     }
 
 
@@ -241,8 +264,13 @@ class Hospedagem{
                        ':ID'=>$this->getIdHospedagem()
                         ));
                 $this->confirmaCheckout();
-                $this->calculaEstadia();
-               // $this->confirmaCheckout();//n ta deixando salvar o valor
+                
+                if($this->getGaragem() == 1){
+                    $this->calculaEstadiaCA();
+                }else{
+                    $this->calculaEstadiaSA();
+                }
+                
                 
                $this->update($this->getIdHospede(),$this->getIdQuarto(),$this->getCheckin()
                 ,$this->getCheckout(),$this->getValor(),$this->getFinalizado());
@@ -294,27 +322,69 @@ class Hospedagem{
 
     }
 
-    public function calculaEstadia(){
+    public function calculaEstadiaSA(){
         $hotel = new Hotel();
-       // $qtDias = date("d/m/Y H:i:s",strtotime($this->getCheckout())) -  date("d/m/Y H:i:s",strtotime($this->getCheckin()));
-       $qtDias = date("d/m/Y H:i:s",strtotime($this->getCheckout())) -  date("d/m/Y H:i:s",strtotime($this->getCheckin()));   
-     //  $qtDias =  date("d/m/Y H:i:s",$this->getCheckout()) - date("d/m/Y H:i:s",$this->getCheckin());
+      
+        $qtDias = date("d/m/Y H:i:s",strtotime($this->getCheckout())) -  date("d/m/Y H:i:s",strtotime($this->getCheckin()));   
+        $quantDiasUteis = 0;
+        $quantDiasFDS = 0;
        $this->setTotalEstadia($qtDias);
         $total = 0;
         for($i=0 ; $i<$qtDias ; $i++){
             $datas = $this->getCheckin() + ($i* 86400);
             $data = explode(",",date("l, d/m/Y",$datas) ) ;
-            if($data[0] == $hotel->semana[0] || $data[0] == $hotel->semana[6]){
-            
+
+           
+                
+            if($data[0] == $hotel->semana[0] || $data[0] == $hotel->semana[6] && $this->getGaragem() == 0){
+                $quantDiasFDS++;
+                $this->setQtDiasFDS($quantDiasFDS);
+             
                 $total += $hotel->precoDiaria[1];
                 
-            }else{
+            }
+            else{
+                $quantDiasUteis++;
+                $this->setQtDiasUteis($quantDiasUteis);
                 $total += $hotel->precoDiaria[0];
             }
-
         }
         $this->setValor($total);
     }
+
+    public function calculaEstadiaCA(){
+        $hotel = new Hotel();
+      
+        $qtDias = date("d/m/Y H:i:s",strtotime($this->getCheckout())) -  date("d/m/Y H:i:s",strtotime($this->getCheckin()));   
+        $quantDiasUteis = 0;
+        $quantDiasFDS = 0;
+       $this->setTotalEstadia($qtDias);
+        $total = 0;
+        for($i=0 ; $i<$qtDias ; $i++){
+            $datas = $this->getCheckin() + ($i* 86400);
+            $data = explode(",",date("l, d/m/Y",$datas) ) ;
+
+           
+            if($data[0] == $hotel->semana[0] || $data[0] == $hotel->semana[6] && $this->getGaragem() == 1){
+                $quantDiasFDS++;
+                $this->setQtDiasFDS($quantDiasFDS);
+                $total += $hotel->acrescimo[1];
+                $total += $hotel->precoDiaria[1];
+                
+            }
+            else{
+                $quantDiasUteis++;
+                $this->setQtDiasUteis($quantDiasUteis);
+                $total += $hotel->acrescimo[0];
+                $total += $hotel->precoDiaria[0];
+            }
+        }
+        $this->setValor($total);
+    }
+
+
+
+
 
     public function confirmaCheckout(){
         $sql = new Sql();
