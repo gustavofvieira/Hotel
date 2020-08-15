@@ -15,25 +15,24 @@ $quarto = new Quarto();
 
 if(!empty($cpf)){
     $hospede->loadByCpf($cpf);
-                     
-    $hospedagem->loadByHospedeOQuarto("",$cpf,"");
+    
 
-    $quarto->loadById($hospedagem->getIdQuarto());
-
-    $hospedagem->checkout($hospede->getIdhospede(),$hospedagem->getIdQuarto());
+    $hospedagem->checkout($cpf);
     
  
     if(!empty($hospedagem->getIdHospedagem())){
         echo "HOSPEDE: ". $hospede->getNome() 
             ."<br>QUARTO: " .$quarto->getNumero()
-            ."<br>Data CheckIn: " .$hospedagem->getCheckin()
+            ."<br>Data CheckIn: " . date('d/m/Y H:i:s', strtotime($hospedagem->getCheckin()))
             ."<br>Data CheckOut: " .$hospedagem->getCheckout()
+            ."<br>Id quarto: " .$hospedagem->getIdQuarto();
             //."<br>Total da estadia: " .$hospedagem->getTotalEstadia()
            // ."<br>Valor total:".$hospedagem->getValor()
-            ."<br>Checkout Efetuado por CPF ";
+          //  ."<br>Checkout Efetuado por CPF ";
     }else{
-        echo "Checkout não efetuado - Hospede não cadastrado";
+       echo "Checkout não efetuado - Hospede não cadastrado";
     }
+  
     
 }
 
@@ -76,6 +75,6 @@ if(!empty($nome)){
         echo "Checkout não efetuado - Hospede não cadastrado";
     }
     
-
+*/
 
 

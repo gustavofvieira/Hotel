@@ -218,14 +218,20 @@ class Hospedagem{
     ##################### CHECKOUT #################### toda verificação dentro do checkout pra chamar o update
 
 
-   public function checkout($idhospede, $idquarto){
-        $this->setIdHospede($idhospede);
+   public function checkout($cpf){
+                 $sql = new Sql();
+                 $this->loadByHospedeOQuarto("",$cpf,"");
                  $this->confirmaHospedagem();
-                 $this->setCheckout("NOW()");
-                 $this->setFinalizado(1);
-                 $this->liberaQuarto();
-                $this->update($this->getIdHospedagem(),$this->getIdQuarto(),$this->getCheckin()
+                $this->liberaQuarto();
+                $this->setFinalizado(1);
+                $this->setCheckout("NOW()");
+                $this->update($this->getIdHospede(),$this->getIdQuarto(),$this->getCheckin()
                 ,$this->getCheckout(),$this->getValor(),$this->getFinalizado());
+ 
+                $sql->query("UPDATE hospedagem SET checkout = NOW() WHERE id_hospedagem = :ID",array(
+                       ':ID'=>$this->getIdHospedagem()
+                        ));
+               // $this->confirmaHospedagem();
 
     }
 
@@ -234,40 +240,44 @@ class Hospedagem{
     public function loadByHospedeOQuarto($nome,$cpf,$telefone){
         $sql = new Sql();
         if(!empty($nome)){
-            $results = $sql->select("SELECT * FROM hospedagem INNER JOIN hospede ON hospedagem.id_hospede = hospede.id_hospede and hospede.nome = :NOME", array(
+            $results = $sql->select("SELECT * FROM hospedagem INNER JOIN hospede ON hospedagem.id_hospede = hospede.id_hospede and hospede.nome = :NOME and hospedagem.finalizado = 0", array(
                 ":NOME"=>$nome
             ));
             if(count($results) > 0){
                  $this->setData($results[0]);
-                 $this->setIdQuarto($results[0]["id_quarto"]);
+                
             }
         }
         if(!empty($cpf)){
-            $results = $sql->select("SELECT * FROM hospedagem INNER JOIN hospede ON hospedagem.id_hospede = hospede.id_hospede and hospede.cpf = :CPF", array(
+            $results = $sql->select("SELECT * FROM hospedagem INNER JOIN hospede ON hospedagem.id_hospede = hospede.id_hospede and hospede.cpf = :CPF and hospedagem.finalizado = 0", array(
                 ":CPF"=>$cpf
             ));
 
             if(count($results) > 0){
                  $this->setData($results[0]);
-                 $this->setIdQuarto($results[0]["id_quarto"]);
+                
             }
         }
         if(!empty($telefone)){
-            $results = $sql->select("SELECT * FROM hospedagem INNER JOIN hospede ON hospedagem.id_hospede = hospede.id_hospede and hospede.telefone = :TEL", array(
+            $results = $sql->select("SELECT * FROM hospedagem INNER JOIN hospede ON hospedagem.id_hospede = hospede.id_hospede and hospede.telefone = :TEL and hospedagem.finalizado = 0", array(
                 ":TEL"=>$telefone
             ));
             if(count($results) > 0){
                  $this->setData($results[0]);
-                 $this->setIdQuarto($results[0]["id_quarto"]);
+                
             }
         }
-       
-       //
-       public function liberaQuarto(){
+        
+        
+    }
 
-       }
-        
-        
+    
+    public function liberaQuarto(){
+        $sql = new Sql();
+        $sql->query("UPDATE quarto SET ocupado = 0 WHERE id_quarto = :IDQUARTO",array(
+            ':IDQUARTO'=>$this->getIdQuarto()
+        ));
+
     }
 
 }

@@ -9,7 +9,7 @@ sendo R$15,00 de segunda à sexta e R$20,00 nos finais de semana;
 
 class Hotel{
     
-    public $semana  = array("Domingo","Segunda","Terça","Quarta","Quinta","Sexta","Sábado");
+    public $semana  = array("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday");
     public $precoDiaria = array(120,150);
     public $acrescimo = array(15,20);
 
