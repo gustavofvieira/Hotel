@@ -36,14 +36,26 @@ echo "<br>";
 // echo date("l, d/m/Y",$sevenDays);
 
 echo "<br>";
-$dataInicio = strtotime("2020-08-01");
+$dataInicio = strtotime("2020-08-01 16:39:00");
 $dataFim = strtotime("2020-08-14");
 echo date("l, d/m/Y",$dataInicio)." - ". date("l, d/m/Y",$dataFim);
 $qtDias =date("d/m/Y",$dataFim) -  date("d/m/Y",$dataInicio);
-echo "Qt dias: ".$qtDias."<br>";
-echo "DtInicio: ".$dataInicio."<br>";
+
+echo "DtInicio: ".date("d/m/Y H:i:s",$dataInicio)."<br>";
 $total = 0;
+$horaCheckout = explode(" ",date("d/m/Y H:i:s",$dataInicio));
+//echo $horaCheckout[1];
+if($horaCheckout[1] >= "16:30:00"){
+    echo "maior que 16:30";
+    //$dataInicio += 86400;
+    $qtDias+=1;
+ }else{
+    echo "menor que 16:30";
+ }
+ echo "<br>Qt dias: ".$qtDias."<br>";
+ echo "DtInicio: ".date("d/m/Y H:i:s",$dataInicio)."<br>";
 for($i=0 ; $i<$qtDias ; $i++){
+
     $datas = $dataInicio + ($i* 86400);
     $data = explode(",",date("l, d/m/Y",$datas) ) ;
     if($data[0] == $hotel->semana[0] || $data[0] == $hotel->semana[6]){

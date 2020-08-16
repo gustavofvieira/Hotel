@@ -347,13 +347,19 @@ class Hospedagem{
         $hotel = new Hotel();
       
         $qtDias = date("d/m/Y H:i:s",strtotime($this->getCheckout())) -  date("d/m/Y H:i:s",strtotime($this->getCheckin()));   
+       
+        $horaCheckout = explode(" ",date("d/m/Y H:i:s",strtotime($this->getCheckout())));
+        if($horaCheckout[1] >= "16:30:00"){
+            $qtDias+=1;
+         }
+       
         $quantDiasUteis = 0;
         $quantDiasFDS = 0;
        $this->setTotalEstadia($qtDias);
         $total = 0;
         for($i=0 ; $i<$qtDias ; $i++){
             $datas = $this->getCheckin() + ($i* 86400);
-            $data = explode(",",date("l, d/m/Y",$datas) ) ;
+            $data = explode(",",date("l, d/m/Y",$datas)) ;
 
            
                 
@@ -377,6 +383,13 @@ class Hospedagem{
         $hotel = new Hotel();
       
         $qtDias = date("d/m/Y H:i:s",strtotime($this->getCheckout())) -  date("d/m/Y H:i:s",strtotime($this->getCheckin()));   
+       
+        $horaCheckout = explode(" ",date("d/m/Y H:i:s",strtotime($this->getCheckout())));
+        if($horaCheckout[1] >= "16:30:00"){
+            $qtDias+=1;
+         }
+       
+        
         $quantDiasUteis = 0;
         $quantDiasFDS = 0;
        $this->setTotalEstadia($qtDias);
