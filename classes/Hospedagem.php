@@ -114,7 +114,7 @@ class Hospedagem{
         $this->ultimaEstadia = $value; 
     }
 
-
+ 
     public function loadById($id){
         $sql = new Sql();
         $results = $sql->select("SELECT * FROM hospedagem where id_hospedagem = :ID", array(
@@ -253,12 +253,9 @@ class Hospedagem{
         $this->setValor($data['valor_hospedagem']);
         $this->setFInalizado($data['finalizado']);
         $this->setGaragem($data['garagem']);
-        $this->setUltimaEstadia($data['ultimoCheckout']);
+        $this->setValorUltima($data['valorUltima']);
         $this->setTotalValorHospedagens($data['totalHospedagens']);
 
-        
-    
-    
     }
 
 
@@ -434,25 +431,38 @@ class Hospedagem{
         ));
     }
 
-     
-    public function ultimoCheckoutEValorTotal($idhospede){
-        $sql = new Sql();
-        $results = $sql->select("SELECT MAX(checkout) as ultimoCheckout, SUM(valor_hospedagem) as totalHospedagens from hospedagem where id_hospede = :IDHOSPEDE" , array(
-            ":IDHOSPEDE"=>$idhospede
-        ));
-        if(count($results) > 0){
-             $this->setData($results[0]);
-        }
-    }
+     public function ultimoValorETotal($idhospede){
+            $this->valorHospedagens($idhospede);
+            $this->valorUltimaHospedagem($idhospede);
+     }
+
     
-    /*
+    public static function valorHospedagens($idhospede){
+        $sql = new Sql();
+        return $sql->select("SELECT SUM(valor_hospedagem) as totalHospedagens FROM hospedagem WHERE id_hospede = :IDHOSPEDE and finalizado = 1 ",array(
+            ':IDHOSPEDE' => $idhospede
+        ));
+    }
 
-    consultas valor ultima hospedagem e valor total
-SELECT SUM(valor_hospedagem) as totalHospedagens from hospedagem where id_hospede = 4
 
-#SELECT valor_hospedagem as valorUltima  from hospedagem where id_hospede = 4  and valor_hospedagem != 0 order by id_hospedagem desc limit 1
+    public static function valorUltimaHospedagem($idhospede){
+        $sql = new Sql();
+        return $sql->select("SELECT valor_hospedagem as valorUltima  from hospedagem where id_hospede = :IDHOSPEDE  and valor_hospedagem != 0  and finalizado = 1 order by id_hospedagem desc limit 1",array(
+            ':IDHOSPEDE' => $idhospede
+        ));
+    }
+
+  
+   ############################################# HOSPEDES CHECKIN E CHECKOUT ################################
+   public static function hospedesCheckin(){
+    $sql = new Sql();
+    return $sql->select("SELECT * FROM hospedagem INNER JOIN hospede ON hospedagem.id_hospede = hospede.id_hospede and checkout is null and hospedagem.finalizado = 0");
+}
+
+public static function hospedesCheckout(){
+    $sql = new Sql();
+    return $sql->select("SELECT * FROM hospedagem INNER JOIN hospede ON hospedagem.id_hospede = hospede.id_hospede and checkout is not null and hospedagem.finalizado = 1");
+}
 
 
-    */
-   
 }
